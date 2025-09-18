@@ -1,0 +1,77 @@
+# Game Test Automation Practice Project - Cursor Rules
+
+## Project Context
+This is a comprehensive test automation framework for game development, specifically designed to practice technologies required for Unreal Engine test automation roles.
+
+## Technology Stack
+- **C++**: Core automation engines and Unreal Engine integration
+- **C#**: Windows-specific automation and .NET integration  
+- **Python**: Scripting, data processing, and test orchestration
+- **Unreal Engine**: 5.3+ with Gauntlet framework
+- **CI/CD**: BuildGraph, Horde, GitHub integration
+- **APIs**: REST endpoints with HTTP protocol implementation
+- **Database**: MySQL for test data management
+- **Testing**: MSTest, NUnit, Catch2, GoogleTest, Pytest
+
+## Architecture Principles
+- **Test-First Development**: TDD mandatory for all components
+- **Multi-Language Proficiency**: Clear boundaries between C++, C#, Python
+- **API-First**: REST APIs for cross-language communication
+- **Performance Focused**: Unit <5min, Integration <30min, Nightly <2hr
+- **Game Engine Integration**: UE4/5, Gauntlet, BuildGraph, Horde
+
+## Development Guidelines
+- Follow constitution principles strictly
+- Implement comprehensive error handling with retry mechanisms
+- Use layered architecture with clear separation of concerns
+- Maintain performance metrics and monitoring
+- Support both 2D and 3D graphics testing scenarios
+
+## Recent Changes
+- Created comprehensive RDD specification with 26 functional requirements
+- Established multi-component architecture with language boundaries
+- Defined API contracts and data models
+- Set up CI/CD integration patterns
+- Implemented performance targets and error handling strategies
+
+## Key Entities
+- AutomationFramework: Core system with layered architecture
+- TestSuite: Configurable test collections
+- BuildPipeline: CI/CD workflow management
+- PerformanceMetrics: Data collection and analysis
+- GameEngineIntegration: UE connectivity layer
+
+## Testing Strategy
+- Unit tests for individual components
+- Integration tests for cross-component functionality
+- Contract tests for API validation
+- Performance tests for optimization
+- End-to-end tests for complete workflows
+
+## Performance Targets
+- Unit tests: < 5 minutes
+- Integration tests: < 30 minutes  
+- Nightly builds: < 2 hours
+- API responses: < 200ms
+- Memory usage: < 4GB per instance
+- Concurrent instances: 10+
+
+## Error Handling
+- Automatic retry (3 attempts) for transient failures
+- Graceful degradation for non-critical tests
+- Comprehensive logging with stack traces
+- Circuit breaker patterns for cascade prevention
+
+## Integration Points
+- Unreal Engine 4/5 with Gauntlet framework
+- BuildGraph and Horde build systems
+- GitHub and Perforce version control
+- MySQL database for data persistence
+- REST APIs for external communication
+
+## Quality Standards
+- Clean, maintainable, well-documented code
+- Comprehensive test coverage
+- Performance monitoring and optimization
+- Security best practices
+- Cross-platform compatibility

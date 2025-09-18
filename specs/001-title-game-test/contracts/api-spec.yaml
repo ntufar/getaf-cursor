@@ -1,0 +1,664 @@
+openapi: 3.0.3
+info:
+  title: Game Test Automation Framework API
+  description: REST API for game test automation framework with Unreal Engine integration
+  version: 1.0.0
+  contact:
+    name: Game Test Automation Team
+    email: automation@example.com
+
+servers:
+  - url: https://api.automation.example.com/v1
+    description: Production server
+  - url: https://staging-api.automation.example.com/v1
+    description: Staging server
+  - url: http://localhost:8080/v1
+    description: Development server
+
+paths:
+  # Test Execution Endpoints
+  /tests/execute:
+    post:
+      summary: Execute test suite
+      description: Execute a test suite with specified configuration
+      operationId: executeTestSuite
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TestExecutionRequest'
+      responses:
+        '202':
+          description: Test execution started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestExecutionResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /tests/{testId}/status:
+    get:
+      summary: Get test execution status
+      description: Get the current status of a test execution
+      operationId: getTestStatus
+      parameters:
+        - name: testId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Test status retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestStatusResponse'
+        '404':
+          description: Test not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Metrics Collection Endpoints
+  /metrics:
+    get:
+      summary: Get performance metrics
+      description: Retrieve performance metrics for specified time range
+      operationId: getPerformanceMetrics
+      parameters:
+        - name: entityType
+          in: query
+          schema:
+            type: string
+            enum: [FRAMEWORK, TEST_SUITE, PIPELINE]
+        - name: entityId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: metricType
+          in: query
+          schema:
+            type: string
+            enum: [EXECUTION_TIME, SUCCESS_RATE, MEMORY_USAGE, CPU_USAGE, THROUGHPUT]
+      responses:
+        '200':
+          description: Metrics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /metrics/report:
+    post:
+      summary: Generate metrics report
+      description: Generate a comprehensive metrics report
+      operationId: generateMetricsReport
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MetricsReportRequest'
+      responses:
+        '200':
+          description: Report generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsReportResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Build Pipeline Endpoints
+  /builds/trigger:
+    post:
+      summary: Trigger build pipeline
+      description: Trigger a build pipeline with specified configuration
+      operationId: triggerBuildPipeline
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildTriggerRequest'
+      responses:
+        '202':
+          description: Build pipeline triggered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildTriggerResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /builds/{buildId}/status:
+    get:
+      summary: Get build pipeline status
+      description: Get the current status of a build pipeline
+      operationId: getBuildStatus
+      parameters:
+        - name: buildId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Build status retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildStatusResponse'
+        '404':
+          description: Build not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Game Engine Integration Endpoints
+  /engine/connect:
+    post:
+      summary: Connect to game engine
+      description: Establish connection to Unreal Engine instance
+      operationId: connectGameEngine
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EngineConnectionRequest'
+      responses:
+        '200':
+          description: Engine connection established
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EngineConnectionResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Engine connection failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /engine/{engineId}/status:
+    get:
+      summary: Get engine connection status
+      description: Get the current status of a game engine connection
+      operationId: getEngineStatus
+      parameters:
+        - name: engineId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Engine status retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EngineStatusResponse'
+        '404':
+          description: Engine not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Performance Monitoring Endpoints
+  /performance/health:
+    get:
+      summary: Get system health
+      description: Get overall system health and performance status
+      operationId: getSystemHealth
+      responses:
+        '200':
+          description: System health retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemHealthResponse'
+        '503':
+          description: System unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /performance/thresholds:
+    get:
+      summary: Get performance thresholds
+      description: Get current performance thresholds and alerts
+      operationId: getPerformanceThresholds
+      responses:
+        '200':
+          description: Thresholds retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PerformanceThresholdsResponse'
+
+components:
+  schemas:
+    TestExecutionRequest:
+      type: object
+      required:
+        - suiteId
+        - configuration
+      properties:
+        suiteId:
+          type: string
+          format: uuid
+          description: ID of the test suite to execute
+        configuration:
+          type: object
+          description: Test execution configuration
+          properties:
+            parallel:
+              type: boolean
+              description: Enable parallel execution
+            timeout:
+              type: integer
+              description: Execution timeout in seconds
+            environment:
+              type: string
+              enum: [DEV, STAGING, PRODUCTION]
+            dataSources:
+              type: array
+              items:
+                type: string
+              description: Test data sources
+
+    TestExecutionResponse:
+      type: object
+      properties:
+        executionId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [PENDING, RUNNING, COMPLETED, FAILED]
+        message:
+          type: string
+        estimatedDuration:
+          type: integer
+          description: Estimated duration in seconds
+
+    TestStatusResponse:
+      type: object
+      properties:
+        executionId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [PENDING, RUNNING, COMPLETED, FAILED]
+        progress:
+          type: number
+          minimum: 0
+          maximum: 100
+          description: Progress percentage
+        results:
+          type: object
+          properties:
+            totalTests:
+              type: integer
+            passedTests:
+              type: integer
+            failedTests:
+              type: integer
+            skippedTests:
+              type: integer
+        executionTime:
+          type: integer
+          description: Execution time in seconds
+        startedAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+
+    MetricsResponse:
+      type: object
+      properties:
+        metrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/PerformanceMetric'
+        summary:
+          type: object
+          properties:
+            average:
+              type: number
+            min:
+              type: number
+            max:
+              type: number
+            count:
+              type: integer
+
+    PerformanceMetric:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        entityType:
+          type: string
+          enum: [FRAMEWORK, TEST_SUITE, PIPELINE]
+        entityId:
+          type: string
+          format: uuid
+        metricType:
+          type: string
+          enum: [EXECUTION_TIME, SUCCESS_RATE, MEMORY_USAGE, CPU_USAGE, THROUGHPUT]
+        value:
+          type: number
+        unit:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        context:
+          type: object
+
+    MetricsReportRequest:
+      type: object
+      required:
+        - entityType
+        - startDate
+        - endDate
+      properties:
+        entityType:
+          type: string
+          enum: [FRAMEWORK, TEST_SUITE, PIPELINE]
+        entityId:
+          type: string
+          format: uuid
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        format:
+          type: string
+          enum: [JSON, CSV, PDF]
+          default: JSON
+
+    MetricsReportResponse:
+      type: object
+      properties:
+        reportId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [GENERATING, COMPLETED, FAILED]
+        downloadUrl:
+          type: string
+          format: uri
+        generatedAt:
+          type: string
+          format: date-time
+
+    BuildTriggerRequest:
+      type: object
+      required:
+        - pipelineId
+        - configuration
+      properties:
+        pipelineId:
+          type: string
+          format: uuid
+        configuration:
+          type: object
+          properties:
+            environment:
+              type: string
+              enum: [DEV, STAGING, PRODUCTION]
+            triggerType:
+              type: string
+              enum: [MANUAL, SCHEDULED, WEBHOOK]
+            artifacts:
+              type: array
+              items:
+                type: string
+
+    BuildTriggerResponse:
+      type: object
+      properties:
+        buildId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [PENDING, RUNNING, SUCCESS, FAILED, CANCELLED]
+        message:
+          type: string
+        estimatedDuration:
+          type: integer
+          description: Estimated duration in seconds
+
+    BuildStatusResponse:
+      type: object
+      properties:
+        buildId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [PENDING, RUNNING, SUCCESS, FAILED, CANCELLED]
+        progress:
+          type: number
+          minimum: 0
+          maximum: 100
+        stages:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              status:
+                type: string
+                enum: [PENDING, RUNNING, SUCCESS, FAILED, SKIPPED]
+              duration:
+                type: integer
+        artifacts:
+          type: array
+          items:
+            type: string
+        startedAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+
+    EngineConnectionRequest:
+      type: object
+      required:
+        - engineVersion
+        - integrationType
+      properties:
+        engineVersion:
+          type: string
+          description: Unreal Engine version
+        integrationType:
+          type: string
+          enum: [GAUNTLET, BUILDGRAPH, HORDE, UGS]
+        configuration:
+          type: object
+          properties:
+            host:
+              type: string
+            port:
+              type: integer
+            credentials:
+              type: object
+
+    EngineConnectionResponse:
+      type: object
+      properties:
+        engineId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [CONNECTED, DISCONNECTED, ERROR]
+        capabilities:
+          type: array
+          items:
+            type: string
+        message:
+          type: string
+
+    EngineStatusResponse:
+      type: object
+      properties:
+        engineId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [CONNECTED, DISCONNECTED, ERROR]
+        lastHeartbeat:
+          type: string
+          format: date-time
+        errorCount:
+          type: integer
+        capabilities:
+          type: array
+          items:
+            type: string
+
+    SystemHealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [HEALTHY, WARNING, CRITICAL]
+        components:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              status:
+                type: string
+                enum: [HEALTHY, WARNING, CRITICAL]
+              responseTime:
+                type: number
+              lastCheck:
+                type: string
+                format: date-time
+        overallMetrics:
+          type: object
+          properties:
+            cpuUsage:
+              type: number
+            memoryUsage:
+              type: number
+            diskUsage:
+              type: number
+            activeConnections:
+              type: integer
+
+    PerformanceThresholdsResponse:
+      type: object
+      properties:
+        thresholds:
+          type: array
+          items:
+            type: object
+            properties:
+              metricType:
+                type: string
+                enum: [EXECUTION_TIME, SUCCESS_RATE, MEMORY_USAGE, CPU_USAGE, THROUGHPUT]
+              warningThreshold:
+                type: number
+              criticalThreshold:
+                type: number
+              unit:
+                type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+        timestamp:
+          type: string
+          format: date-time
+        requestId:
+          type: string
+          format: uuid
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []
